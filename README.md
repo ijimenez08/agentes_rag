@@ -354,3 +354,27 @@ Antes de publicar el repositorio, agrega el archivo `LICENSE` con la licencia el
 ## Autor
 
 Proyecto desarrollado como base escalable para asistentes documentales con LangChain.
+
+
+## Capturas y ejecucion
+
+### Modo local 
+
+<img width="1920" height="1080" alt="Captura desde 2026-07-12 15-03-52" src="https://github.com/user-attachments/assets/c3684352-16bd-4ea9-b4be-458e0021a523" />
+
+<img width="1920" height="1080" alt="Captura desde 2026-07-12 15-03-58" src="https://github.com/user-attachments/assets/8b50583c-c8cd-49d8-ab06-48570570e803" />
+
+<img width="1920" height="1080" alt="Captura desde 2026-07-12 15-04-27" src="https://github.com/user-attachments/assets/ac4abb61-4712-445b-a107-bc7f3ed35f73" />
+
+<img width="1920" height="1080" alt="Captura desde 2026-07-12 15-06-07" src="https://github.com/user-attachments/assets/6e3de7f5-4d2c-4017-94a9-57d44d8cc52a" />
+
+<img width="1920" height="1080" alt="Captura desde 2026-07-12 15-06-14" src="https://github.com/user-attachments/assets/37b0b783-1dc0-4286-9a8a-67009d01dfcc" />
+
+### Modo Web con streamlit
+
+https://agentesrag-prxhhkx3gwyzzhy6hzmp4h.streamlit.app
+
+
+
+
+
