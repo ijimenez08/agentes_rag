@@ -1,14 +1,19 @@
-# Agente RAG con LangChain
+# Base de Conocimiento Normativo Laboral de Panamá
 
-Aplicación web para consultar documentos mediante **Retrieval-Augmented Generation (RAG)**. Permite utilizar modelos locales con **LM Studio** o servicios externos mediante las API de **OpenAI** y **NVIDIA NIM**.
+Aplicación web especializada en **legislación y políticas laborales fundamentales de la República de Panamá**, desarrollada con Retrieval-Augmented Generation (RAG) y LangChain.
 
-El usuario puede subir varios documentos, procesarlos y realizar preguntas sobre su contenido. La configuración técnica está protegida mediante un panel administrativo y no aparece en la interfaz pública.
+El sistema permite consultar una base normativa en lenguaje natural, recuperar los fragmentos pertinentes y responder con referencias al archivo y página utilizados. Puede funcionar con modelos locales mediante **LM Studio** o con las API de **OpenAI** y **NVIDIA NIM**.
+
+> **Aviso:** las respuestas son informativas y dependen de los documentos incorporados. El sistema no sustituye asesoría legal profesional ni garantiza por sí solo que una norma continúe vigente.
 
 ## Características
 
 - Carga múltiple de archivos PDF, DOCX, TXT y Markdown.
-- Respuestas generadas únicamente con el contexto recuperado.
-- Referencias al archivo y página utilizados.
+- Lectura automática de legislación y políticas almacenadas en el repositorio.
+- Indicador visible del número de normas disponibles y su estado de indexación.
+- Respuestas limitadas al fundamento documental recuperado.
+- Referencias al instrumento, archivo y página utilizados.
+- Advertencias cuando el contenido no permite confirmar vigencia o responder un caso.
 - Compatibilidad con LM Studio, OpenAI y NVIDIA NIM.
 - Cambio de proveedor desde un panel administrativo protegido.
 - Claves, modelos y endpoints ocultos para los usuarios públicos.
@@ -40,13 +45,13 @@ El usuario puede subir varios documentos, procesarlos y realizar preguntas sobre
 ```mermaid
 flowchart TD
     U["Usuario"] --> A["Interfaz Streamlit"]
-    A --> B["Carga de documentos"]
-    B --> C["Extracción de texto"]
+    A --> B["Base normativa laboral"]
+    B --> C["Extracción de legislación y políticas"]
     C --> D["División en fragmentos"]
     D --> E["Generación de embeddings"]
     E --> F["Índice vectorial en memoria"]
 
-    U --> G["Pregunta"]
+    U --> G["Consulta normativa"]
     G --> H["Búsqueda semántica"]
     F --> H
     H --> I["Contexto recuperado"]
@@ -54,7 +59,7 @@ flowchart TD
     J --> K["LM Studio"]
     J --> L["OpenAI"]
     J --> M["NVIDIA NIM"]
-    K --> N["Respuesta con fuentes"]
+    K --> N["Respuesta fundamentada"]
     L --> N
     M --> N
     N --> A
@@ -76,6 +81,8 @@ agente-rag/
 │       └── service.py             # Indexación, recuperación y respuesta
 ├── tests/
 │   └── test_documents.py
+├── data/
+│   └── documentos_base/           # Legislación y políticas laborales
 ├── docs/
 │   └── DECISIONES.md
 ├── .streamlit/
@@ -196,17 +203,51 @@ La aplicación estará disponible normalmente en:
 ```text
 http://localhost:8501
 ```
-
 ## Uso
+
+### Base normativa permanente
+
+Guarda la legislación y las políticas laborales que debe consultar el agente dentro de:
+
+```text
+data/documentos_base/
+```
+
+La lectura es recursiva, por lo que puedes organizarlos en subcarpetas. Se admiten PDF, DOCX, TXT y Markdown:
+
+```text
+data/documentos_base/
+├── codigo_trabajo/
+├── leyes/
+├── decretos_y_reglamentos/
+├── resoluciones/
+├── politicas_laborales/
+└── reformas_y_actualizaciones/
+```
+
+Al abrir la aplicación, la normativa permanente se carga e indexa automáticamente. La interfaz muestra cuántos archivos están almacenados, permite ver sus nombres y confirma cuándo la base está lista.
+
+Los archivos subidos por el usuario también se incorporan automáticamente. El botón **Actualizar base normativa** permite forzar una nueva indexación si modificas la documentación o necesitas reintentar una carga.
+
+Si el repositorio es público, los documentos almacenados en esta carpeta también serán públicos. No incluyas información confidencial ni datos personales.
 
 ### Usuario público
 
-1. Sube uno o varios documentos.
-2. Pulsa **Procesar archivos**.
-3. Escribe una pregunta en el chat.
+1. Revisa la normativa disponible o agrega documentos autorizados.
+2. Espera la confirmación **Base normativa lista**.
+3. Escribe una consulta sobre legislación o políticas laborales de Panamá.
 4. Revisa la respuesta y las fuentes recuperadas.
 
 El usuario público no puede visualizar el proveedor, la clave API, los modelos ni las URLs internas.
+
+### Ejemplos de consultas
+
+- ¿Qué establece el documento sobre este derecho u obligación laboral?
+- ¿En qué artículo o sección se fundamenta la respuesta?
+- ¿Qué requisitos aparecen en la normativa cargada para este procedimiento?
+- ¿Los documentos mencionan excepciones o condiciones especiales?
+- ¿Qué aspectos no pueden confirmarse con la base normativa disponible?
+- Compara lo establecido en dos instrumentos incluidos en la base.
 
 ### Administrador
 
@@ -216,7 +257,7 @@ El usuario público no puede visualizar el proveedor, la clave API, los modelos 
 4. Configura el modelo de chat, embeddings y URL base.
 5. Escribe una nueva clave únicamente cuando quieras reemplazar la actual.
 6. Pulsa **Guardar configuración**.
-7. Procesa nuevamente los documentos.
+7. Actualiza nuevamente la base normativa.
 
 Los cambios se guardan localmente en `.runtime/private_config.json` con permisos restringidos.
 
@@ -305,7 +346,7 @@ El archivo `.runtime/private_config.json` puede contener claves guardadas desde 
 ## Limitaciones actuales
 
 - El índice vectorial permanece en memoria.
-- Los documentos deben procesarse nuevamente después de reiniciar la aplicación.
+- Cada nueva sesión puede requerir la generación del índice vectorial en memoria.
 - Los PDF escaneados requieren OCR y no se procesan todavía.
 - El almacenamiento local de configuración no se comparte entre varias réplicas.
 - Streamlit Community Cloud no garantiza persistencia permanente del archivo `.runtime/private_config.json`.
@@ -351,10 +392,9 @@ El archivo probablemente contiene imágenes escaneadas. Esta versión utiliza ex
 
 Antes de publicar el repositorio, agrega el archivo `LICENSE` con la licencia elegida. Para un proyecto abierto sencillo puede utilizarse MIT, siempre que las licencias y condiciones de uso de los modelos seleccionados sean compatibles.
 
-## Autor
+## Enfoque del proyecto
 
-Proyecto desarrollado como base escalable para asistentes documentales con LangChain.
-
+Proyecto desarrollado como base escalable para consulta documental de legislación y políticas laborales fundamentales de la República de Panamá.
 
 ## Capturas y ejecucion
 
