@@ -17,7 +17,7 @@ from rag.admin import (  # noqa: E402
     guardar_configuracion_privada,
     verificar_clave,
 )
-from rag.documents import leer_archivos  # noqa: E402
+from rag.documents import leer_archivos, leer_carpeta  # noqa: E402
 
 
 load_dotenv()
@@ -197,12 +197,15 @@ def mostrar_error(mensaje: str, error: Exception) -> None:
         st.error(f"{mensaje}. Contacta al administrador.")
 
 
-st.title("📚 Agente RAG de Recursos Humanos")
+st.title("📚 Agente RAG con LangChain")
 st.caption("Consulta tus propios documentos con una configuración privada y segura.")
 
 ajustes = ajustes_iniciales()
 panel_administracion(ajustes)
 config = construir_configuracion(ajustes)
+carpeta_documentos = Path(
+    secreto("RAG_DOCUMENTS_PATH", "data/documentos_base")
+).expanduser()
 archivos = st.file_uploader(
     "Sube uno o varios archivos",
     type=["pdf", "docx", "txt", "md"],
@@ -222,18 +225,25 @@ with col2:
         st.rerun()
 
 if procesar:
-    if not archivos:
-        st.warning("Sube al menos un archivo.")
+    documentos_base = leer_carpeta(carpeta_documentos)
+    if not archivos and not documentos_base:
+        st.warning("Sube al menos un archivo o agrega documentos a la carpeta base.")
     else:
         try:
             with st.spinner("Leyendo e indexando documentos..."):
-                documentos = leer_archivos(archivos)
+                documentos_subidos = leer_archivos(archivos or [])
+                documentos = documentos_base + documentos_subidos
                 servicio = ServicioRAG(config)
                 cantidad = servicio.indexar(documentos)
                 st.session_state.servicio_rag = servicio
                 st.session_state.huella_rag = huella_configuracion(config)
                 st.session_state.mensajes = []
-            st.success(f"Listo: {len(archivos)} archivo(s) y {cantidad} fragmentos indexados.")
+            st.success(
+                "Listo: "
+                f"{len(documentos_base)} documento(s) base, "
+                f"{len(archivos or [])} archivo(s) subido(s) y "
+                f"{cantidad} fragmentos indexados."
+            )
         except Exception as error:
             mostrar_error("No se pudieron procesar los archivos", error)
 

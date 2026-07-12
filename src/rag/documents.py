@@ -17,6 +17,17 @@ class ArchivoSubido(Protocol):
     def getvalue(self) -> bytes: ...
 
 
+class ArchivoLocal:
+    """Adapta un archivo del servidor al formato usado por Streamlit."""
+
+    def __init__(self, ruta: Path, nombre: str | None = None):
+        self.ruta = ruta
+        self.name = nombre or ruta.name
+
+    def getvalue(self) -> bytes:
+        return self.ruta.read_bytes()
+
+
 def _documento(texto: str, nombre: str, pagina: int | None = None) -> Document:
     metadata: dict[str, str | int] = {"source": nombre}
     if pagina is not None:
@@ -54,4 +65,19 @@ def leer_archivos(archivos: list[ArchivoSubido]) -> list[Document]:
     documentos: list[Document] = []
     for archivo in archivos:
         documentos.extend(leer_archivo(archivo))
+    return documentos
+
+
+def leer_carpeta(ruta: Path) -> list[Document]:
+    """Lee recursivamente los documentos permanentes de una carpeta."""
+    if not ruta.exists():
+        return []
+
+    extensiones = {".pdf", ".docx", ".txt", ".md"}
+    documentos: list[Document] = []
+    for archivo in sorted(ruta.rglob("*")):
+        if not archivo.is_file() or archivo.suffix.lower() not in extensiones:
+            continue
+        nombre_relativo = str(archivo.relative_to(ruta))
+        documentos.extend(leer_archivo(ArchivoLocal(archivo, nombre_relativo)))
     return documentos
