@@ -197,7 +197,7 @@ def mostrar_error(mensaje: str, error: Exception) -> None:
         st.error(f"{mensaje}. Contacta al administrador.")
 
 
-st.title("📚 Agente RAG con LangChain")
+st.title("📚 Agente RAG de Recursos Humanos")
 st.caption("Consulta tus propios documentos con una configuración privada y segura.")
 
 ajustes = ajustes_iniciales()
