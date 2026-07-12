@@ -70,14 +70,20 @@ def leer_archivos(archivos: list[ArchivoSubido]) -> list[Document]:
 
 def leer_carpeta(ruta: Path) -> list[Document]:
     """Lee recursivamente los documentos permanentes de una carpeta."""
-    if not ruta.exists():
-        return []
-
-    extensiones = {".pdf", ".docx", ".txt", ".md"}
     documentos: list[Document] = []
-    for archivo in sorted(ruta.rglob("*")):
-        if not archivo.is_file() or archivo.suffix.lower() not in extensiones:
-            continue
+    for archivo in listar_archivos_carpeta(ruta):
         nombre_relativo = str(archivo.relative_to(ruta))
         documentos.extend(leer_archivo(ArchivoLocal(archivo, nombre_relativo)))
     return documentos
+
+
+def listar_archivos_carpeta(ruta: Path) -> list[Path]:
+    """Lista los archivos compatibles usados como base documental."""
+    if not ruta.exists():
+        return []
+    extensiones = {".pdf", ".docx", ".txt", ".md"}
+    return sorted(
+        archivo
+        for archivo in ruta.rglob("*")
+        if archivo.is_file() and archivo.suffix.lower() in extensiones
+    )
