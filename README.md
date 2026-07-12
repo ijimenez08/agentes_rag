@@ -102,8 +102,8 @@ Se recomienda evitar Python 3.13 cuando alguna dependencia todavía no disponga 
 Clona el repositorio y entra en la carpeta:
 
 ```bash
-git clone https://github.com/TU-USUARIO/TU-REPOSITORIO.git
-cd TU-REPOSITORIO
+git clone https://github.com/ijimenez08/agentes_rag.git
+cd agentes_rag
 ```
 
 Crea y activa un entorno virtual:
@@ -166,12 +166,9 @@ OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 # NVIDIA
 NVIDIA_API_KEY=
 NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1
-NVIDIA_CHAT_MODEL=meta/llama-3.1-8b-instruct
+NVIDIA_CHAT_MODEL=nvidia/nemotron-3-ultra-550b-a55b
 NVIDIA_EMBEDDING_MODEL=nvidia/nv-embedqa-e5-v5
 ```
-
-Nunca agregues `.env`, `.streamlit/secrets.toml` ni `.runtime/` al repositorio.
-
 ## Crear o cambiar la contraseña administrativa
 
 La contraseña no se guarda directamente. Genera su hash con:
