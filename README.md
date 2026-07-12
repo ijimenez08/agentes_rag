@@ -374,7 +374,11 @@ Proyecto desarrollado como base escalable para asistentes documentales con LangC
 
 https://agentesrag-prxhhkx3gwyzzhy6hzmp4h.streamlit.app
 
+## comentarios
 
+por seguridad la api de nvidia no esta disponible, te recomiendo que accedas al panel de configuracion para que puedas colocar la api directamente.
+
+para acceder en la web te dejo el usuario que es "admin_rag" y pass "abc123456789", sin tu llave api no funciona el modelo, puedes ejecutarlo en local.
 
 
 
